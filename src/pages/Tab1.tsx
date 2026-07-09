@@ -59,7 +59,7 @@ const Tab1: React.FC = () => {
             }).then((updated) => {
               if (updated) {
                 setToastMsg('Repositorio actualizado correctamente');
-                loadRepos();
+                setRepos((prev) => prev.map((r) => (r.id === repo.id ? updated : r)));
               }
             }).finally(() => setLoading(false));
           }
