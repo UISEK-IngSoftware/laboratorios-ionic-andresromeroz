@@ -3,7 +3,15 @@ import { IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLab
 import { pencil, trash } from 'ionicons/icons';
 import { Repository } from "../interfaces/Repository";
 
-const RepoItem: React.FC<Repository> = ({ name, description, language, owner }) => {
+interface RepoItemProps extends Repository {
+  onEdit: (repo: Repository) => void;
+  onDelete: (repo: Repository) => void;
+}
+
+const RepoItem: React.FC<RepoItemProps> = (props) => {
+  const { onEdit, onDelete, ...repo } = props;
+  const { name, description, language, owner } = repo;
+
   return (
     <IonItemSliding>
       <IonItem>
@@ -18,10 +26,10 @@ const RepoItem: React.FC<Repository> = ({ name, description, language, owner }) 
       </IonItem>
 
       <IonItemOptions>
-        <IonItemOption>
+        <IonItemOption onClick={() => onEdit(repo)}>
           <IonIcon icon={pencil} slot='icon-only'></IonIcon>
         </IonItemOption>
-        <IonItemOption color={'danger'}>
+        <IonItemOption color={'danger'} onClick={() => onDelete(repo)}>
           <IonIcon icon={trash} slot='icon-only'></IonIcon>
         </IonItemOption>
       </IonItemOptions>

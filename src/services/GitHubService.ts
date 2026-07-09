@@ -49,3 +49,26 @@ export const createRepository = async (repository: RepositoryPayload): Promise<R
     return null;
   }
 };
+
+export const updateRepository = async (
+  fullName: string,
+  changes: Partial<RepositoryPayload>
+): Promise<Repository | null> => {
+  try {
+    const response = await githubApiClient.patch(`repos/${fullName}`, changes);
+    return response.data as Repository;
+  } catch (error) {
+    console.error("Error updating repository:", error);
+    return null;
+  }
+};
+
+export const deleteRepository = async (fullName: string): Promise<boolean> => {
+  try {
+    await githubApiClient.delete(`repos/${fullName}`);
+    return true;
+  } catch (error) {
+    console.error("Error deleting repository:", error);
+    return false;
+  }
+};
