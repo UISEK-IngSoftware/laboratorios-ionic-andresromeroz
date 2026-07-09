@@ -2,16 +2,20 @@ import axios from "axios";
 import { Repository } from "../interfaces/Repository";
 import { GithubUser } from "../interfaces/GithubUser";
 import { RepositoryPayload } from "../interfaces/RepositoryPayload";
+import AuthService from "./AuthService";
 
 const GITHUB_API_URL = import.meta.env.VITE_GITHUB_API_URL || "https://api.github.com";
-const GITHUB_API_TOKEN = import.meta.env.VITE_GITHUB_API_TOKEN;
+
+const githubApiClient = axios.create({
+  baseURL: GITHUB_API_URL,
+  headers: {
+    Authorization: AuthService.getAuthHeader() || "",
+  },
+});
 
 export const fetchRepositories = async (): Promise<Repository[]> => {
   try {
-    const response = await axios.get(`${GITHUB_API_URL}/user/repos`, {
-      headers: {
-        Authorization: `Bearer ${GITHUB_API_TOKEN}`,
-      },
+    const response = await githubApiClient.get(`user/repos`, {
       params: {
         per_page: 100,
         sort: "created",
@@ -28,11 +32,7 @@ export const fetchRepositories = async (): Promise<Repository[]> => {
 
 export const getUserInfo = async (): Promise<GithubUser | null> => {
   try {
-    const response = await axios.get(`${GITHUB_API_URL}/user`, {
-      headers: {
-        Authorization: `Bearer ${GITHUB_API_TOKEN}`,
-      },
-    });
+    const response = await githubApiClient.get(`user`);
     return response.data as GithubUser;
   } catch (error) {
     console.error("Error fetching user info:", error);
@@ -42,11 +42,7 @@ export const getUserInfo = async (): Promise<GithubUser | null> => {
 
 export const createRepository = async (repository: RepositoryPayload): Promise<Repository | null> => {
   try {
-    const response = await axios.post(`${GITHUB_API_URL}/user/repos`, repository, {
-      headers: {
-        Authorization: `Bearer ${GITHUB_API_TOKEN}`,
-      },
-    });
+    const response = await githubApiClient.post(`user/repos`, repository);
     return response.data as Repository;
   } catch (error) {
     console.error("Error creating repository:", error);

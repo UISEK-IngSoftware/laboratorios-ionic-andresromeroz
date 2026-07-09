@@ -1,13 +1,17 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import './Tab3.css';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { logOutOutline } from 'ionicons/icons';
 import { GithubUser } from '../interfaces/GithubUser';
 import { getUserInfo } from '../services/GitHubService';
+import AuthService from '../services/AuthService';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Tab3: React.FC = () => {
   const [userInfo, setUserInfo] = useState<GithubUser | null>(null);
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   const loadUserInfo = async () => {
     setLoading(true);
@@ -19,6 +23,11 @@ const Tab3: React.FC = () => {
   useIonViewWillEnter(() => {
     loadUserInfo();
   });
+
+  const handleLogout = () => {
+    AuthService.logout();
+    history.push('/login');
+  };
 
   return (
     <IonPage>
@@ -48,6 +57,10 @@ const Tab3: React.FC = () => {
               </IonCardContent>
             </IonCard>
           )}
+          <IonButton expand="block" color="danger" onClick={handleLogout}>
+            <IonIcon slot="start" icon={logOutOutline} />
+            Salir
+          </IonButton>
         </div>
         <LoadingSpinner isOpen={loading} />
       </IonContent>

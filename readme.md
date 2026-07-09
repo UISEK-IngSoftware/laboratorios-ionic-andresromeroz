@@ -62,6 +62,16 @@ Implementación de la funcionalidad para crear repositorios:
 **Endpoint a implementar:**
 - `POST /user/repos` - Crear un nuevo repositorio
 
+### Laboratorio 10: Autenticación de usuario
+
+Implementación de un flujo de inicio y cierre de sesión:
+
+- Pantalla de inicio de sesión con usuario y token de acceso personal
+- Servicio de autenticación basado en `localStorage`
+- Protección de las rutas de la aplicación según el estado de autenticación
+- Cierre de sesión desde la pestaña de Perfil
+- Uso del token almacenado para autenticar las peticiones a la API de GitHub
+
 ### Examen Parcial 2: Implementación de una API REST usando Ionic (Métodos DELETE y PATCH)
 
 Implementación de funcionalidades avanzadas de gestión:
