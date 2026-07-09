@@ -1,7 +1,25 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import './Tab3.css';
+import { useState } from 'react';
+import { GithubUser } from '../interfaces/GithubUser';
+import { getUserInfo } from '../services/GitHubService';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Tab3: React.FC = () => {
+  const [userInfo, setUserInfo] = useState<GithubUser | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const loadUserInfo = async () => {
+    setLoading(true);
+    const userData = await getUserInfo();
+    setUserInfo(userData);
+    setLoading(false);
+  };
+
+  useIonViewWillEnter(() => {
+    loadUserInfo();
+  });
+
   return (
     <IonPage>
       <IonHeader>
@@ -16,19 +34,22 @@ const Tab3: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <div className="card-container">
-          <IonCard className='card'>
-            <div className="img-container">
-              <img src="https://avatars.githubusercontent.com/u/79285823?v=4" alt="Profile Image" />
-            </div>
-            <IonCardHeader>
-              <IonCardTitle>Andrés Romero</IonCardTitle>
-              <IonCardSubtitle>Ingeniero de Software</IonCardSubtitle>
-            </IonCardHeader>
-            <IonCardContent>
-              <p>Hola. Soy un ingeniero de software. Me encanta trabajar con tecnologías innovadoras.</p>
-            </IonCardContent>
-          </IonCard>
+          {userInfo && (
+            <IonCard className='card'>
+              <div className="img-container">
+                <img src={userInfo.avatar_url} alt={userInfo.name} />
+              </div>
+              <IonCardHeader>
+                <IonCardTitle>{userInfo.name}</IonCardTitle>
+                <IonCardSubtitle>{userInfo.login}</IonCardSubtitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <p>{userInfo.bio}</p>
+              </IonCardContent>
+            </IonCard>
+          )}
         </div>
+        <LoadingSpinner isOpen={loading} />
       </IonContent>
     </IonPage>
   );
