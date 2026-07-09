@@ -32,7 +32,7 @@ const Tab2: React.FC = () => {
     createRepository(repoFormData).then((newRepo) => {
       if (newRepo) {
         setRepoFormData({ name: '', description: '' });
-        history.push('/tab1');
+        history.push('/tab1', { newRepo });
       } else {
         setErrorMsg('Ocurrió un error al crear el repositorio.');
       }

@@ -2,6 +2,7 @@ import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToast, IonToolbar
 import './Tab1.css';
 import RepoItem from '../components/RepoItem';
 import { useState } from 'react';
+import { useLocation } from 'react-router';
 import { Repository } from '../interfaces/Repository';
 import { fetchRepositories, updateRepository, deleteRepository } from '../services/GitHubService';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -11,11 +12,17 @@ const Tab1: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [presentAlert] = useIonAlert();
+  const location = useLocation<{ newRepo?: Repository }>();
 
   const loadRepos = async () => {
     setLoading(true);
     const response = await fetchRepositories();
-    setRepos(response);
+    const newRepo = location.state?.newRepo;
+    if (newRepo && !response.some((r) => r.id === newRepo.id)) {
+      setRepos([newRepo, ...response]);
+    } else {
+      setRepos(response);
+    }
     setLoading(false);
   };
 
